@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Functional Signatures in Great Britain</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- load leaflet.js -->
+    <!-- load CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <!-- load JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+    <!-- load VectorGrid extension -->
+    <script src="https://unpkg.com/leaflet.vectorgrid@1.3.0/dist/Leaflet.VectorGrid.bundled.js"></script>
+    
+    <style type='text/css'>
+    
+        @font-face {
+            font-family: "et-book";
+            src: url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot");
+            src: url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot?#iefix") format("embedded-opentype"), url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff") format("woff"), url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf") format("truetype"), url("et-book/et-book-roman-line-figures/et-book-roman-line-figures.svg#etbookromanosf") format("svg");
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "et-book";
+            src: url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot");
+            src: url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot?#iefix") format("embedded-opentype"), url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff") format("woff"), url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.ttf") format("truetype"), url("et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.svg#etbookromanosf") format("svg");
+            font-weight: normal;
+            font-style: italic;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "et-book";
+            src: url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot");
+            src: url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot?#iefix") format("embedded-opentype"), url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff") format("woff"), url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.ttf") format("truetype"), url("et-book/et-book-bold-line-figures/et-book-bold-line-figures.svg#etbookromanosf") format("svg");
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        .maplegend {
+            position: absolute;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, .8);
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            font-size: 12px/14px;
+            right: 10px;
+            bottom: 20px;
+            display: none;
+            font-family: 'et-book', serif;
+        }
+
+        .maplegend .legend-title {
+            text-align: left;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #3B6E8D;
+            font-size: larger;
+        }
+
+        .maplegend .legend-scale ul {
+            margin: 0;
+            margin-bottom: 0px;
+            padding: 0;
+            float: left;
+            list-style: none;
+        }
+
+        .maplegend .legend-scale ul li {
+            list-style: none;
+            margin-left: 0;
+            line-height: 16px;
+            margin-bottom: 6px;
+        }
+
+        .maplegend ul.legend-labels li span {
+            display: block;
+            float: left;
+            height: 14px;
+            width: 14px;
+            margin-right: 5px;
+            margin-left: 0;
+            border: 0px solid #ccc;
+        }
+
+        .maplegend .legend-source {
+            color: #777;
+            clear: both;
+        }
+
+        .maplegend a {
+            color: #777;
+        }
+
+        #maptitle {
+            position: absolute;
+            z-index: 9999;
+            background-color: rgba(255, 255, 255, .8);
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-left: 20px;
+            font-size: 12px;
+            right: 10px;
+            top: 20px;
+            max-width: 480px;
+            height: 50%;
+            display: none;
+        }
+
+        div.overflow {
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        h1 {
+            font-size: 30px;
+            font-family: 'et-book', serif;
+            color: #3B6E8D;
+        }
+
+        h2 {
+            font-size: 25px;
+            font-family: 'et-book', serif;
+            color: #3B6E8D;
+        }
+
+        h3 {
+            font-size: 20px;
+            font-family: 'et-book', serif;
+            color: #BD5B4F;
+        }
+
+        div.logos {
+            height: 100px;
+            margin-top: 30px;
+            padding: 0 30px 0 30px;
+        }
+
+        div.logos img {
+            vertical-align: middle;
+        }
+
+        div.logos a {
+            height: 100%;
+        }
+
+        button.toggle-title {
+            position: absolute;
+            z-index: 99999;
+            background-color: rgba(255, 255, 255, .8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            border: 0;
+            padding: 5px;
+            font-size: 12px;
+            right: 10px;
+            top: 20px;
+        }
+
+        button.toggle-legend {
+            position: absolute;
+            z-index: 99999;
+            background-color: rgba(255, 255, 255, .8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            border: 0;
+            padding: 5px;
+            font-size: 12px;
+            right: 10px;
+            bottom: 20px;
+        }
+
+        @media only screen and (min-width: 1920px) {
+
+            button.toggle-title,
+            button.toggle-legend {
+                padding: 10px;
+                font-size: 18px;
+            }
+        }
+    </style>
+
+    <script>
+        function toggleTitle() {
+            var x = document.getElementById("maptitle");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "block";
+            }
+        };
+
+        function toggleLegend() {
+            var x = document.getElementById("maplegend signaturetype");
+            if (x.style.display === "block") {
+                x.style.display = "none";
+            } else {
+                x.style.display = "block";
+            }
+        }
+    </script>
+    
+    
+</head>
+
+<body style='margin:0'>
+    <!-- div containing map -->
+    <div id="map" style="width: 100vw; height: 100vh; background: #fdfdfd"></div>
+    <!-- specification of leaflet map -->
+    <script>
+        // create map
+        var map = L.map('map', {
+            center: [53.4107, -2.9704],
+            minZoom: 6,
+            maxZoom: 15,
+            zoomControl: true,
+            zoom: 12,
+        });
+
+        // add background basemap
+        var mapBaseLayer = L.tileLayer(
+            'https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
+                attribution: '(C) OpenStreetMap contributors (C) CARTO'
+            }
+        ).addTo(map);
+
+        // get vector tiles URL
+        var mapUrl = "tiles/{z}/{x}/{y}.pbf";
+
+        // mapping of colors to signature types
+        const cmap = {'Countryside': '#f2e6c7',
+                     'Industrial - Commercial': '#8fa37e',
+                     'Industrial - Construction sites': '#d7a59f',
+                     'Industrial - Manufacturing': '#d7ded1',
+                     'Outliers': '#4c4c4c',
+                     'Residential': '#c3abaf',
+                     'Residential - Low-density': '#e4cbc8',
+                     'Residential - Low-density - Well-served': '#c2d0d9',
+                     'Residential - Mixed-use': '#f0d17d',
+                     'Residential - Well-served': '#678ea6',
+                     'Residential Greenspace': '#94666e',
+                     'Services - Leisure and Cultural': '#efc758',
+                     'Services - Mixed - Low-density': '#3b6e8c',
+                     'Services - Transport and distribution hubs': '#333432',
+                     'Urban - Global culture': '#ab888e',
+                     'Urban - High employment, amenities': '#bc5b4f',
+                     'Urban - High employment, culture, connectivity': '#a7b799',
+                     'Urban - Mixed-use - High density': '#c1c1c0'
+        };
+        
+        
+        
+        // mapping of names to signature types to be shown in popup on click
+        const popup_info = {
+             'Countryside': '<strong>Signature type</strong><br>Countryside',
+             'Industrial - Commercial': '<strong>Signature type</strong><br>Industrial - Commercial',
+             'Industrial - Construction sites': '<strong>Signature type</strong><br>Industrial - Construction sites',
+             'Industrial - Manufacturing': '<strong>Signature type</strong><br>Industrial - Manufacturing',
+             'Outliers': '<strong>Signature type</strong><br>Outliers',
+             'Residential': '<strong>Signature type</strong><br>Residential',
+             'Residential - Low-density': '<strong>Signature type</strong><br>Residential - Low-density',
+             'Residential - Low-density - Well-served': '<strong>Signature type</strong><br>Residential - Low-density - Well-served',
+             'Residential - Mixed-use': '<strong>Signature type</strong><br>Residential - Mixed-use',
+             'Residential - Well-served': '<strong>Signature type</strong><br>Residential - Well-served',
+             'Residential Greenspace': '<strong>Signature type</strong><br>Residential Greenspace',
+             'Services - Leisure and Cultural': '<strong>Signature type</strong><br>Services - Leisure and Cultural',
+             'Services - Mixed - Low-density': '<strong>Signature type</strong><br>Services - Mixed - Low-density',
+             'Services - Transport and distribution hubs': '<strong>Signature type</strong><br>Services - Transport and distribution hubs',
+             'Urban - Global culture': '<strong>Signature type</strong><br>Urban - Global culture',
+             'Urban - High employment, amenities': '<strong>Signature type</strong><br>Urban - High employment, amenities',
+             'Urban - High employment, culture, connectivity': '<strong>Signature type</strong><br>Urban - High employment, culture, connectivity',
+             'Urban - Mixed-use - High density': '<strong>Signature type</strong><br>Urban - Mixed-use - High density'
+        };
+
+        // define styling of vector tiles
+        var vectorTileStyling = {
+            signatures_4326: function(properties) {
+                return ({
+                    fill: true,
+                    fillColor: cmap[properties.signature_type],
+                    fillOpacity: 0.9,
+                    weight: 1,
+                    color: "#ffffff",
+                    opacity: 1.0,
+                });
+            }
+        }
+
+        // define options of vector tiles
+        var mapVectorTileOptions = {
+            rendererFactory: L.canvas.tile,
+            interactive: true,
+            attribution: '(C) Martin Fleischmann',
+            maxNativeZoom: 15,
+            minZoom: 6,
+            vectorTileLayerStyles: vectorTileStyling,
+        };
+
+
+        // create VectorGrid layer and add popup to it
+        var mapPbfLayer = new L.VectorGrid.Protobuf(
+            mapUrl, mapVectorTileOptions
+        ).on('click', function (e) {
+            L.popup()
+                .setContent(popup_info[e.layer.properties.signature_type])
+                .setLatLng(e.latlng)
+                .openOn(map);
+        });
+
+        // add VectorGrid layer to map
+        mapPbfLayer.addTo(map);
+        
+         // add transparent  road basemap on top
+        var roads = L.tileLayer(
+            'https://api.mapbox.com/styles/v1/martinfleis/ckl6jkuwe3uxa17mrhnp78e62/tiles/256/{z}/{x}/{y}{r}?access_token=pk.eyJ1IjoibWFydGluZmxlaXMiLCJhIjoiY2wwc2pjZHo2MGRxODNpbm02b2JiY2trbiJ9.7ejMC67KJjx3fjqHOmf2PQ', {
+            attribution: '',
+            opacity: 0.3
+        }
+        ).addTo(map);
+
+        
+        var mapBaseLayer = L.tileLayer(
+            'https://{s}.basemaps.cartocdn.com/rastertiles/light_only_labels/{z}/{x}/{y}.png', {
+                attribution: '(C) OpenStreetMap contributors (C) CARTO'
+            }
+        ).addTo(map);
+
+        // add scalebar
+        L.control.scale().addTo(map);       
+        
+        
+    </script>
+    
+    
+        <!-- legend -->
+    <button onclick="toggleLegend()" class="toggle-legend">Legend</button>
+    <div id='maplegend signaturetype' class='maplegend'>
+        <div class='legend-title'>Functional signature type</div>
+        <div class='legend-scale'>
+            <ul class='legend-labels'>
+                <li><span style='background:#f2e6c7'></span>Countryside</li>
+                <li><span style='background:#8fa37e'></span>Industrial - Commercial</li>
+                <li><span style='background:#d7a59f'></span>Industrial - Construction sites</li>
+                <li><span style='background:#d7ded1'></span>Industrial - Manufacturing</li>
+                <li><span style='background:#4c4c4c'></span>Outliers</li>
+                <li><span style='background:#c3abaf'></span>Residential</li>
+                <li><span style='background:#e4cbc8'></span>Residential - Low-density</li>
+                <li><span style='background:#c2d0d9'></span>Residential - Low-density - Well-served</li>
+                <li><span style='background:#f0d17d'></span>Residential - Mixed-use</li>
+                <li><span style='background:#678ea6'></span>Residential - Well-served</li>
+                <li><span style='background:#94666e'></span>Residential Greenspace</li>
+                <li><span style='background:#efc758'></span>Services - Leisure and Cultural</li>
+                <li><span style='background:#3b6e8c'></span>Services - Mixed - Low-density</li>
+                <li><span style='background:#333432'></span>Services - Transport and distribution hubs</li>
+                <li><span style='background:#ab888e'></span>Urban - Global culture</li>
+                <li><span style='background:#bc5b4f'></span>Urban - High employment, amenities</li>
+                <li><span style='background:#a7b799'></span>Urban - High employment, culture, connectivity</li>
+                <li><span style='background:#c1c1c0'></span>Urban - Mixed-use - High density</li>
+            </ul>
+        </div>
+    </div>
+    
+    
+</body>
+
+</html>

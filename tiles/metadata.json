@@ -1,0 +1,14 @@
+{
+"name": "tiles/",
+"description": "tiles/",
+"version": "2",
+"minzoom": "0",
+"maxzoom": "15",
+"center": "-0.192261,54.101281,15",
+"bounds": "-8.647028,49.866167,1.761476,60.861415",
+"type": "overlay",
+"format": "pbf",
+"generator": "tippecanoe v1.36.0",
+"generator_options": "tippecanoe -z15 --no-tile-compression '--output-to-directory=tiles/' signatures_4326.geojson",
+"json": "{\"vector_layers\": [ { \"id\": \"signatures_4326\", \"description\": \"\", \"minzoom\": 0, \"maxzoom\": 15, \"fields\": {\"signature_type\": \"String\"} } ],\"tilestats\": {\"layerCount\": 1,\"layers\": [{\"layer\": \"signatures_4326\",\"count\": 155441,\"geometry\": \"Polygon\",\"attributeCount\": 1,\"attributes\": [{\"attribute\": \"signature_type\",\"count\": 18,\"type\": \"string\",\"values\": [\"Countryside\",\"Industrial - Commercial\",\"Industrial - Construction sites\",\"Industrial - Manufacturing\",\"Outliers\",\"Residential\",\"Residential - Low-density\",\"Residential - Low-density - Well-served\",\"Residential - Mixed-use\",\"Residential - Well-served\",\"Residential Greenspace\",\"Services - Leisure and Cultural\",\"Services - Mixed - Low-density\",\"Services - Transport and distribution hubs\",\"Urban - Global culture\",\"Urban - High employment, amenities\",\"Urban - High employment, culture, connectivity\",\"Urban - Mixed-use - High density\"]}]}]}}"
+}
